@@ -57,9 +57,9 @@ def transcrire_audio(url):
         print("Transcription avec Whisper...")
 
         modele = WhisperModel(
-            "medium",
+            "small",
             device="cpu",
-            comput  e_type="int32"
+            compute_type="int8"
         )
 
         segments, infos = modele.transcribe(
@@ -68,10 +68,19 @@ def transcrire_audio(url):
             vad_filter=True
         )
 
-        return [
-            (segment.start, segment.text.strip())
-            for segment in segments
-        ]
+        # return [
+        #     (segment.start, segment.text.strip())
+        #     for segment in segments
+        # ]
+        resultat = []
+
+        for segment in segments:
+            texte = segment.text.strip()
+            resultat.append((segment.start, texte))
+        
+            print(f"[{segment.start:.1f}s] {texte}", flush=True)
+        
+        return resultat
 
 
 def main():
